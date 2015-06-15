@@ -11,7 +11,7 @@ for (var n = 0; n < 1e3; n += 1)
   numbers.push(Heap.mixin({ n: n }));
 shuffle(numbers);
 
-var heap = new Heap;
+var heap = new Heap();
 for (var n = 0; n < numbers.length; n += 1) {
   heap.insert(numbers[n], compare);
   assert.equal(heap.size, n + 1);
@@ -20,6 +20,12 @@ for (var n = 0; n < numbers.length; n += 1) {
 
 shuffle(numbers);
 
+const n42 = numbers[42];
+heap.remove(n42, compare);
+heap.insert(n42, compare);
+heap.insert(n42, compare);
+heap.remove(Heap.mixin({ n: -1 }), compare);
+
 while (numbers.length > 0) {
   heap.remove(numbers.pop(), compare);
   assert.equal(heap.size, numbers.length);
@@ -27,6 +33,8 @@ while (numbers.length > 0) {
 }
 
 assert.equal(heap.size, 0);
+
+heap.remove(Heap.mixin({ n: -1 }), compare);
 
 function shuffle(a) {
   for (var i = 0, n = a.length; i < n; i += 1) {
