@@ -63,6 +63,42 @@ child_process.exec(nodeBinary + ' '
     assert.equal(stdout, 'A\nhello\n');
   });
 
+// test that preload can be used with stdin
+var stdin_proc = child_process.spawn(
+  nodeBinary,
+  ['--require', fixtureA],
+  {stdio: 'pipe'}
+);
+stdin_proc.stdin.end('console.log(\'hello\');');
+var stdin_stdout = '';
+stdin_proc.stdout.on('data', function(d) {
+  stdin_stdout += d;
+});
+stdin_proc.on('exit', function(code) {
+  assert.equal(code, 0);
+  assert.equal(stdin_stdout, 'A\nhello\n');
+});
+
+// test that preload can be used with repl
+var repl_proc = child_process.spawn(
+  nodeBinary,
+  ['-i', '--require', fixtureA],
+  {stdio: 'pipe'}
+);
+repl_proc.stdin.end('.exit\n');
+var repl_stdout = '';
+repl_proc.stdout.on('data', function(d) {
+  repl_stdout += d;
+});
+repl_proc.on('exit', function(code) {
+  assert.equal(code, 0);
+  var output = [
+    'A',
+    '> '
+  ].join('\n');
+  assert.equal(repl_stdout, output);
+});
+
 // test that preload placement at other points in the cmdline
 // also test that duplicated preload only gets loaded once
 child_process.exec(nodeBinary + ' '
