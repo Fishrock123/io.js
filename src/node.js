@@ -124,6 +124,7 @@
         if (process._forceRepl || NativeModule.require('tty').isatty(0)) {
           // REPL
           var cliRepl = Module.requireRepl();
+          startup.preloadModules();
           cliRepl.createInternalRepl(process.env, function(err, repl) {
             if (err) {
               throw err;
@@ -148,6 +149,7 @@
           });
 
           process.stdin.on('end', function() {
+            startup.preloadModules();
             process._eval = code;
             evalScript('[stdin]');
           });
