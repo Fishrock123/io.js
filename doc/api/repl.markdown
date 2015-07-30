@@ -29,15 +29,20 @@ For example, you could add this to your bashrc file:
 
     alias iojs="env NODE_NO_READLINE=1 rlwrap iojs"
 
+By default, the REPL will persist history between `iojs` REPL sessions by saving
+to a `.node_repl_history` file in the user's home directory. This can be
+disabled by setting the environment variable `NODE_REPL_HISTORY=""`.
+
 The built-in repl (invoked by running `iojs` or `iojs -i`) may be controlled
 via the following environment variables:
 
- - `NODE_REPL_HISTORY_FILE` - if given, must be a path to a user-writable,
-   user-readable file. When a valid path is given, persistent history support
-   is enabled: REPL history will persist across `iojs` repl sessions.
- - `NODE_REPL_HISTORY_SIZE` - defaults to `1000`. In conjunction with
-   `NODE_REPL_HISTORY_FILE`, controls how many lines of history will be
-   persisted. Must be a positive number.
+ - `NODE_REPL_HISTORY` - if given, must be a path to a user-writable,
+   user-readable file. When a valid path is given, persistent REPL history
+   will be saved to the specified file rather than `.node_repl_history` in the
+   user's home directory. Setting this value to `""` will disable persistent
+   REPL history.
+ - `NODE_REPL_HISTORY_SIZE` - defaults to `1000`. Controls how many lines of
+   history will be persisted if history is available. Must be a positive number.
  - `NODE_REPL_MODE` - may be any of `sloppy`, `strict`, or `magic`. Defaults
    to `magic`, which will automatically run "strict mode only" statements in
    strict mode.
