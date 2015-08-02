@@ -32,7 +32,7 @@ class ArrayStream extends stream.Stream {
       // if (self.paused = true) return
       const next = self._iter.next();
       if (next.done) {
-        // close the repl
+        // Close the repl. Note that it must have a clean prompt to do so.
         setImmediate(function() {
           self.emit('keypress', '', { ctrl: true, name: 'd' });
         });
@@ -158,7 +158,7 @@ function runTest() {
   const expected = opts.expected;
   const after = opts.after;
   const before = opts.before;
-  // const _expected = expected.slice(0)[Symbol.iterator]()
+  // const _expected = expected[Symbol.iterator]()
 
   if (before) before();
 
@@ -188,7 +188,7 @@ function runTest() {
       write(chunk, _, next) {
         const output = chunk.toString();
 
-        // ignore escapes and blank lines
+        // Ignore escapes and blank lines
         if (output.charCodeAt(0) === 27 || /^[\r\n]+$/.test(output))
           return next();
 
@@ -210,7 +210,9 @@ function runTest() {
     if (err) throw err;
 
     if (after) repl.on('close', after);
+
     repl.on('close', function() {
+      // Ensure everything that we expected was output
       if (expected.length !== 0) {
         console.error('ERROR: ' + expected.length + ' !== 0');
         console.error(expected);
