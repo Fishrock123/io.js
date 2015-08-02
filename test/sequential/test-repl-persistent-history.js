@@ -11,11 +11,12 @@ const util = require('util')
 
 common.refreshTmpDir();
 
-// mock os.homedir()
+// Mock os.homedir()
 require('os').homedir = function() {
   return common.tmpDir;
 }
 
+// Create an input stream specialized for testing an array of commands
 class ArrayStream extends stream.Stream {
   run(data, ctx) {
     this._iter = data[Symbol.iterator]()
@@ -29,6 +30,7 @@ class ArrayStream extends stream.Stream {
       // if (self.paused = true) return
       const next = self._iter.next()
       if (next.done) {
+        // close the repl
         setImmediate(function(){
           self.emit('keypress', '', { ctrl: true, name: 'd' });
         })
@@ -46,7 +48,7 @@ class ArrayStream extends stream.Stream {
         doAction()
       }
     }
-    doAction()
+    setImmediate(doAction.bind(this))
   }
   resume() {/* this.paused = false; if (this._iter) this.consume() */}
   write() {}
@@ -54,12 +56,16 @@ class ArrayStream extends stream.Stream {
 }
 ArrayStream.prototype.readable = true;
 
+
+// Mock keys
 const UP = { name: 'up' };
 const ENTER = { name: 'enter' };
 const CLEAR = { ctrl: true, name: 'u' }
+// Common message bits
 const prompt = '> '
 const replDisabled = '\nPersistent history support disabled. Set the NODE_REPL_HISTORY environment\nvariable to a valid, user-writable path to enable.\n'
 const convertMsg = '\nConverting old JSON repl history to line-separated history.\nThe new repl history file can be found at ' + common.tmpDir + '/.node_repl_history.\n'
+
 
 const tests = [{
   env: { NODE_REPL_HISTORY: '' },
@@ -115,6 +121,7 @@ const tests = [{
   test: [UP, UP, ENTER],
   expected: [prompt, prompt + '\'42\'', prompt + '\'=^.^=\'', '\'=^.^=\'\n', prompt]
 }]
+
 
 runTest()
 function runTest() {
