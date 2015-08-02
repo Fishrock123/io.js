@@ -16,10 +16,6 @@ require('os').homedir = function() {
   return common.tmpDir;
 }
 
-const UP = { name: 'up' };
-const ENTER = { name: 'enter' };
-const CLEAR = { ctrl: true, name: 'u' }
-
 class ArrayStream extends stream.Stream {
   run(data, ctx) {
     this._iter = data[Symbol.iterator]()
@@ -58,16 +54,10 @@ class ArrayStream extends stream.Stream {
 }
 ArrayStream.prototype.readable = true;
 
-// const input = new stream.Readable({
-//   read() {
-//     if (!queue.length) repl.emit
-//
-//     this.push(queue.pop())
-//   }
-// });
-
+const UP = { name: 'up' };
+const ENTER = { name: 'enter' };
+const CLEAR = { ctrl: true, name: 'u' }
 const prompt = '> '
-
 const replDisabled = '\nPersistent history support disabled. Set the NODE_REPL_HISTORY environment\nvariable to a valid, user-writable path to enable.\n'
 const convertMsg = '\nConverting old JSON repl history to line-separated history.\nThe new repl history file can be found at ' + common.tmpDir + '/.node_repl_history.\n'
 
@@ -174,9 +164,6 @@ function runTest() {
           console.log('env:', env)
           console.log('test:', test)
         }
-
-        // console.log(output)
-
         // assert.strictEqual(output, expectedOutput);
         next();
       }
@@ -186,22 +173,6 @@ function runTest() {
     terminal: true
   }, function(err, repl) {
     if (err) throw err
-
-    repl.outputStream.on('end', trace)
-    repl.outputStream.on('finish', trace)
-    repl.outputStream.on('close', trace)
-
-    repl.inputStream.on('end', trace)
-    repl.inputStream.on('finish', trace)
-    repl.inputStream.on('close', trace)
-
-    function trace() {
-      try {
-        throw new Error('tracing...')
-      } catch (err) {
-        console.log(err.stack)
-      }
-    }
 
     if (after) repl.on('close', after)
     repl.on('close', function() {
