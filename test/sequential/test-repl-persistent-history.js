@@ -9,11 +9,12 @@ const assert = require('assert');
 const fs = require('fs');
 const util = require('util');
 const path = require('path');
+const os = require('os');
 
 common.refreshTmpDir();
 
 // Mock os.homedir()
-require('os').homedir = function() {
+os.homedir = function() {
   return common.tmpDir;
 };
 
@@ -70,6 +71,8 @@ const replDisabled = '\nPersistent history support disabled. Set the ' +
 const convertMsg = '\nConverting old JSON repl history to line-separated ' +
                    'history.\nThe new repl history file can be found at ' +
                    path.join(common.tmpDir, '.node_repl_history') + '.\n';
+const homedirErr = '\nError: Could not get the home directory.\n' +
+                   'REPL session history will not be persisted.\n'
 // File paths
 const fixtures = path.join(common.testDir, 'fixtures');
 const historyPath = path.join(fixtures, '.node_repl_history');
@@ -131,6 +134,17 @@ const tests = [{
   test: [UP, UP, ENTER],
   expected: [prompt, prompt + '\'42\'', prompt + '\'=^.^=\'', '\'=^.^=\'\n',
              prompt]
+},
+{ // Make sure this is always the last test, since we change os.homedir()
+  env: {},
+  test: [UP],
+  expected: [prompt, homedirErr, prompt, replDisabled, prompt],
+  before: function() {
+    // Mock os.homedir() failure
+    os.homedir = function() {
+      throw new Error('os.homedir() failure');
+    };
+  }
 }];
 
 
@@ -143,7 +157,10 @@ function runTest() {
   const test = opts.test;
   const expected = opts.expected;
   const after = opts.after;
+  const before = opts.before;
   // const _expected = expected.slice(0)[Symbol.iterator]()
+
+  if (before) before();
 
   REPL.createInternalRepl(env, {
     input: new ArrayStream()/*new stream.Readable({
