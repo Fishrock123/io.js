@@ -121,7 +121,7 @@ const tests = [{
   }],
   expected: [prompt, convertMsg, prompt, prompt + '\'=^.^=\'', prompt, '\'',
              '4', '2', '\'', '\'42\'\n', prompt, prompt],
-  after: function ensureFixtureHistory() {
+  after: function ensureHistoryFixture() {
     // XXX(Fishrock123) Make sure nothing weird happened to our fixture.
     // Sometimes this test used to erase it and I'm not sure why.
     const history = fs.readFileSync(historyPath, 'utf8');
