@@ -114,11 +114,11 @@ const tests = [{
 },
 {
   env: { NODE_REPL_HISTORY_FILE: oldHistoryPath },
-  test: [UP, CLEAR, '\'42\'', ENTER, function(cb) {
+  test: [UP, CLEAR, '\'42\'', ENTER/*, function(cb) {
     // XXX(Fishrock123) Allow the REPL to save to disk.
     // There isn't a way to do this programmatically right now.
     setTimeout(cb, 50);
-  }],
+  }*/],
   expected: [prompt, convertMsg, prompt, prompt + '\'=^.^=\'', prompt, '\'',
              '4', '2', '\'', '\'42\'\n', prompt, prompt],
   after: function ensureHistoryFixture() {
