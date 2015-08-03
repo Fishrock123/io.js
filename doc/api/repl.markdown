@@ -29,15 +29,25 @@ For example, you could add this to your bashrc file:
 
     alias iojs="env NODE_NO_READLINE=1 rlwrap iojs"
 
+### Persistent History
+
 By default, the REPL will persist history between `iojs` REPL sessions by saving
 to a `.node_repl_history` file in the user's home directory. This can be
 disabled by setting the environment variable `NODE_REPL_HISTORY=""`.
 
+Previously in io.js v2.x, REPL history was controlled by using a
+`NODE_REPL_HISTORY_FILE` environment variable, and the history was saved in JSON
+format. This variable has now been deprecated, and your REPL history will
+automatically be converted to using a new format, lines separated by OS-defined
+line-breaks. The new file will be saved to either your home directory, or a
+directory defined by the new `NODE_REPL_HISTORY` variable, as documented below.
+
+### Environment Variable Options
+
 The built-in repl (invoked by running `iojs` or `iojs -i`) may be controlled
 via the following environment variables:
 
- - `NODE_REPL_HISTORY` - if given, must be a path to a user-writable,
-   user-readable file. When a valid path is given, persistent REPL history
+ - `NODE_REPL_HISTORY` - When a valid path is given, persistent REPL history
    will be saved to the specified file rather than `.node_repl_history` in the
    user's home directory. Setting this value to `""` will disable persistent
    REPL history.
