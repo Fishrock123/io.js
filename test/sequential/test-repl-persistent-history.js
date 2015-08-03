@@ -11,6 +11,8 @@ const util = require('util');
 const path = require('path');
 const os = require('os');
 
+var failed = false;
+
 common.refreshTmpDir();
 
 // Mock os.homedir()
@@ -151,7 +153,10 @@ const tests = [{
 runTest();
 function runTest() {
   const opts = tests.shift();
-  if (!opts) return;
+  if (!opts) {
+    if (failed) process.exitCode = 1;
+    return;
+  }
 
   const env = opts.env;
   const test = opts.test;
@@ -198,6 +203,7 @@ function runTest() {
                         ' !== ' + util.inspect(expectedOutput, { depth: 0 }));
           console.log('env:', env);
           console.log('test:', test);
+          failed = true;
         }
         // assert.strictEqual(output, expectedOutput);
         next();
@@ -216,6 +222,7 @@ function runTest() {
       if (expected.length !== 0) {
         console.error('ERROR: ' + expected.length + ' !== 0');
         console.error(expected);
+        failed = true;
       }
       // assert.strictEqual(expected.length, 0);
       setImmediate(runTest);
