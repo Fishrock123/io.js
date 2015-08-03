@@ -74,10 +74,11 @@ const convertMsg = '\nConverting old JSON repl history to line-separated ' +
                    'history.\nThe new repl history file can be found at ' +
                    path.join(common.tmpDir, '.node_repl_history') + '.\n';
 const homedirErr = '\nError: Could not get the home directory.\n' +
-                   'REPL session history will not be persisted.\n'
+                   'REPL session history will not be persisted.\n';
 // File paths
 const fixtures = path.join(common.testDir, 'fixtures');
-const historyPath = path.join(fixtures, '.node_repl_history');
+const historyFixturePath = path.join(fixtures, '.node_repl_history');
+const historyPath = path.join(common.tmpDir, '.fixture_copy_repl_history');
 const oldHistoryPath = path.join(fixtures, 'old-repl-history-file.json');
 
 
@@ -127,8 +128,8 @@ const tests = [{
     // XXX(Fishrock123) Make sure nothing weird happened to our fixture.
     // Sometimes this test used to erase it and I'm not sure why.
     const history = fs.readFileSync(historyPath, 'utf8');
-    assert.strictEqual(history,
-                       '\'you look fabulous today\'\n\'Stay Fresh~\'\n');
+    assert.strictEqual(history, '\'you look fabulous today\'' + os.EOL +
+                                '\'Stay Fresh~\'' + os.EOL);
   }
 },
 {
@@ -150,7 +151,12 @@ const tests = [{
 }];
 
 
-runTest();
+// Copy our fixture to the tmp directory
+fs.createReadStream(historyFixturePath)
+  .pipe(fs.createWriteStream(historyPath)).on('unpipe', function() {
+    runTest();
+  });
+
 function runTest() {
   const opts = tests.shift();
   if (!opts) {
