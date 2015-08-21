@@ -1,12 +1,12 @@
 'use strict';
-var common = require('../common'),
+const common = require('../common'),
     assert = require('assert'),
     path = require('path'),
     child_process = require('child_process');
 
-var nodeBinary = process.argv[0];
+const nodeBinary = process.argv[0];
 
-var preloadOption = function(preloads) {
+const preloadOption = function(preloads) {
   var option = '';
   preloads.forEach(function(preload, index) {
     option += '-r ' + preload + ' ';
@@ -14,14 +14,14 @@ var preloadOption = function(preloads) {
   return option;
 };
 
-var fixture = function(name) {
+const fixture = function(name) {
   return path.join(__dirname, '../fixtures/' + name);
 };
 
-var fixtureA = fixture('printA.js');
-var fixtureB = fixture('printB.js');
-var fixtureC = fixture('printC.js');
-var fixtureThrows = fixture('throws_error4.js');
+const fixtureA = fixture('printA.js');
+const fixtureB = fixture('printB.js');
+const fixtureC = fixture('printC.js');
+const fixtureThrows = fixture('throws_error4.js');
 
 // test preloading a single module works
 child_process.exec(nodeBinary + ' '
@@ -63,7 +63,7 @@ child_process.exec(nodeBinary + ' '
   });
 
 // test that preload can be used with stdin
-var stdin_proc = child_process.spawn(
+const stdin_proc = child_process.spawn(
   nodeBinary,
   ['--require', fixtureA],
   {stdio: 'pipe'}
@@ -79,7 +79,7 @@ stdin_proc.on('exit', function(code) {
 });
 
 // test that preload can be used with repl
-var repl_proc = child_process.spawn(
+const repl_proc = child_process.spawn(
   nodeBinary,
   ['-i', '--require', fixtureA],
   {stdio: 'pipe'}
@@ -91,7 +91,7 @@ repl_proc.stdout.on('data', function(d) {
 });
 repl_proc.on('exit', function(code) {
   assert.equal(code, 0);
-  var output = [
+  const output = [
     'A',
     '> '
   ].join('\n');
@@ -118,7 +118,7 @@ child_process.exec(nodeBinary + ' '
   });
 
 // https://github.com/nodejs/node/issues/1691
-var originalCwd = process.cwd();
+const originalCwd = process.cwd();
 process.chdir(path.join(__dirname, '../fixtures/'));
 child_process.exec(nodeBinary + ' '
   + '--expose_debug_as=v8debug '
