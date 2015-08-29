@@ -140,6 +140,8 @@
             });
           });
         } else {
+          startup.preloadModules();
+
           // Read all of stdin - execute it.
           process.stdin.setEncoding('utf8');
 
@@ -149,7 +151,6 @@
           });
 
           process.stdin.on('end', function() {
-            startup.preloadModules();
             process._eval = code;
             evalScript('[stdin]');
           });
