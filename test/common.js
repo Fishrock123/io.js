@@ -138,7 +138,14 @@ Object.defineProperty(exports, 'hasCrypto', {get: function() {
 if (exports.isWindows) {
   exports.PIPE = '\\\\.\\pipe\\libuv-test';
 } else {
-  exports.PIPE = exports.tmpDir + '/test.sock';
+  Object.defineProperty(exports, {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    get() {
+      return exports.tmpDir + '/test.sock';
+    }
+  })
 }
 
 if (process.env.NODE_COMMON_PIPE) {
