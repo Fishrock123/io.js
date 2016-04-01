@@ -1,6 +1,8 @@
 Node.js
 =======
 
+Hi I was Merged with GitHub's new Squash-merge.
+
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/nodejs/node?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js
