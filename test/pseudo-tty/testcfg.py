@@ -78,11 +78,11 @@ class TTYTestCase(test.TestCase):
         print "outline = %s" % outlines[i]
       return True
     for i in xrange(len(patterns)):
-      if not re.match(patterns[i], outlines[i]):
+      if not re.match(patterns[i].strip(), outlines[i].strip()):
         print "match failed"
         print "line=%d" % i
-        print "expect=%s" % patterns[i]
-        print "actual=%s" % outlines[i]
+        print "expect=%s" % patterns[i].strip()
+        print "actual=%s" % outlines[i].strip()
         return True
     return False
 

@@ -650,7 +650,7 @@ def Execute(args, context, timeout=None, env={}, faketty=False):
   if faketty:
     output = os.read(out_master, 9999)
     os.close(out_master)
-    errors = output
+    errors = ''#output
   else:
     os.close(fd_out)
     os.close(fd_err)

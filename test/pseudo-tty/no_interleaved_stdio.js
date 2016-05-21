@@ -7,11 +7,11 @@ const bytes = 1024 - 21;
 
 var out = new Array(bytes).join('o');
 out += 'O'; // End ID character
-out = out.replace(/(o{50})/g, '$1\r');
+out = out.replace(/(o{50})/g, '$1\n');
 
 var err = new Array(bytes).join('x');
 err += 'X'; // End ID character
-err = err.replace(/(x{50})/g, '$1\r');
+err = err.replace(/(x{50})/g, '$1\n');
 
 console.log(out);
 console.error(err);
