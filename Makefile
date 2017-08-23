@@ -40,9 +40,9 @@ BUILDTYPE_LOWER := $(shell echo $(BUILDTYPE) | tr '[A-Z]' '[a-z]')
 EXEEXT := $(shell $(PYTHON) -c \
 		"import sys; print('.exe' if sys.platform == 'win32' else '')")
 
-NODE_EXE = node$(EXEEXT)
+NODE_EXE = ayo$(EXEEXT)
 NODE ?= ./$(NODE_EXE)
-NODE_G_EXE = node_g$(EXEEXT)
+NODE_G_EXE = ayo_g$(EXEEXT)
 NPM ?= ./deps/npm/bin/npm-cli.js
 
 # Flags for packaging.
@@ -124,10 +124,10 @@ coverage-clean:
 	$(RM) -r gcovr testing
 	$(RM) -r out/$(BUILDTYPE)/.coverage
 	$(RM) -r .cov_tmp coverage
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/*.gcda
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/tracing/*.gcda
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/*.gcno
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/tracing*.gcno
+	$(RM) out/$(BUILDTYPE)/obj.target/ayo/src/*.gcda
+	$(RM) out/$(BUILDTYPE)/obj.target/ayo/src/tracing/*.gcda
+	$(RM) out/$(BUILDTYPE)/obj.target/ayo/src/*.gcno
+	$(RM) out/$(BUILDTYPE)/obj.target/ayo/src/tracing*.gcno
 
 # Build and test with code coverage reporting.  Leave the lib directory
 # instrumented for any additional runs the user may want to make.
@@ -156,8 +156,8 @@ coverage-build: all
 coverage-test: coverage-build
 	$(RM) -r out/$(BUILDTYPE)/.coverage
 	$(RM) -r .cov_tmp
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/*.gcda
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/tracing/*.gcda
+	$(RM) out/$(BUILDTYPE)/obj.target/ayo/src/*.gcda
+	$(RM) out/$(BUILDTYPE)/obj.target/ayo/src/tracing/*.gcda
 	-$(MAKE) $(COVTESTS)
 	mv lib lib__
 	mv lib_ lib
@@ -647,7 +647,7 @@ ifeq ($(DESTCPU),ia32)
 override DESTCPU=x86
 endif
 
-TARNAME=node-$(FULLVERSION)
+TARNAME=ayo-$(FULLVERSION)
 TARBALL=$(TARNAME).tar
 # Custom user-specified variation, use it directly
 ifdef VARIATION
@@ -727,7 +727,7 @@ pkg-upload: pkg
 $(TARBALL): release-only $(NODE_EXE) doc
 	git checkout-index -a -f --prefix=$(TARNAME)/
 	mkdir -p $(TARNAME)/doc/api
-	cp doc/node.1 $(TARNAME)/doc/node.1
+	cp doc/node.1 $(TARNAME)/doc/ayo.1
 	cp -r out/doc/api/* $(TARNAME)/doc/api/
 	$(RM) -r $(TARNAME)/deps/v8/{test,samples,tools/profviz,tools/run-tests.py}
 	$(RM) -r $(TARNAME)/doc/images # too big

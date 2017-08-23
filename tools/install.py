@@ -117,7 +117,7 @@ def subdir_files(path, dest, action):
 
 def files(action):
   is_windows = sys.platform == 'win32'
-  output_file = 'node'
+  output_file = 'ayo'
   output_prefix = 'out/Release/'
 
   if 'false' == variables.get('node_shared'):
@@ -141,9 +141,9 @@ def files(action):
   # behave similarly for systemtap
   action(['src/node.stp'], 'share/systemtap/tapset/')
 
-  action(['deps/v8/tools/gdbinit'], 'share/doc/node/')
-  action(['deps/v8/tools/lldbinit'], 'share/doc/node/')
-  action(['deps/v8/tools/lldb_commands.py'], 'share/doc/node/')
+  action(['deps/v8/tools/gdbinit'], 'share/doc/ayo/')
+  action(['deps/v8/tools/lldbinit'], 'share/doc/ayo/')
+  action(['deps/v8/tools/lldb_commands.py'], 'share/doc/ayo/')
 
   if 'freebsd' in sys.platform or 'openbsd' in sys.platform:
     action(['doc/node.1'], 'man/man1/')
@@ -164,28 +164,28 @@ def headers(action):
     'src/node_buffer.h',
     'src/node_object_wrap.h',
     'src/node_version.h',
-  ], 'include/node/')
+  ], 'include/ayo/')
 
   # Add the expfile that is created on AIX
   if sys.platform.startswith('aix'):
-    action(['out/Release/node.exp'], 'include/node/')
+    action(['out/Release/node.exp'], 'include/ayo/')
 
-  subdir_files('deps/v8/include', 'include/node/', action)
+  subdir_files('deps/v8/include', 'include/ayo/', action)
 
   if 'false' == variables.get('node_shared_libuv'):
-    subdir_files('deps/uv/include', 'include/node/', action)
+    subdir_files('deps/uv/include', 'include/ayo/', action)
 
   if 'true' == variables.get('node_use_openssl') and \
      'false' == variables.get('node_shared_openssl'):
-    subdir_files('deps/openssl/openssl/include/openssl', 'include/node/openssl/', action)
-    subdir_files('deps/openssl/config/archs', 'include/node/openssl/archs', action)
-    action(['deps/openssl/config/opensslconf.h'], 'include/node/openssl/')
+    subdir_files('deps/openssl/openssl/include/openssl', 'include/ayo/openssl/', action)
+    subdir_files('deps/openssl/config/archs', 'include/ayo/openssl/archs', action)
+    action(['deps/openssl/config/opensslconf.h'], 'include/ayo/openssl/')
 
   if 'false' == variables.get('node_shared_zlib'):
     action([
       'deps/zlib/zconf.h',
       'deps/zlib/zlib.h',
-    ], 'include/node/')
+    ], 'include/ayo/')
 
 def run(args):
   global node_prefix, install_path, target_defaults, variables
