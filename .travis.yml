@@ -18,3 +18,4 @@ install:
   - make -j2 V=
 script:
   - make -j2 test-ci
+  - make lint
