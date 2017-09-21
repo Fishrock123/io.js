@@ -6,6 +6,10 @@ os:
   - osx
 sudo: false
 cache: ccache
+matrix:
+  include:
+    - os: linux
+      env: LINTER_ONLY=true
 before_install:
   - export HOMEBREW_NO_AUTO_UPDATE=1 # work around https://github.com/travis-ci/travis-ci/issues/7456
   - if [ $TRAVIS_OS_NAME = osx ]; then brew install ccache; fi
@@ -17,5 +21,4 @@ install:
   - ./configure
   - make -j2 V=
 script:
-  - make -j2 test-ci
-  - make lint
+  - tools/run-ci.sh # do linter env variable detection
