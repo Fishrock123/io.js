@@ -47,6 +47,7 @@ function check_mtime(resource, mtime) {
   const real_mtime = fs._toUnixTimestamp(stats.mtime);
   // check up to single-second precision
   // sub-second precision is OS and fs dependant
+  console.log('resource', resource, 'mtime', mtime, 'real_mtime', real_mtime)
   return mtime - real_mtime < 2;
 }
 
@@ -74,6 +75,7 @@ function testIt(atime, mtime, callback) {
   // test synchronized code paths, these functions throw on failure
   //
   function syncTests() {
+    check_mtime(tmpdir.path, mtime);
     fs.utimesSync(tmpdir.path, atime, mtime);
     expect_ok('utimesSync', tmpdir.path, undefined, atime, mtime);
     tests_run++;
@@ -81,15 +83,17 @@ function testIt(atime, mtime, callback) {
     // some systems don't have futimes
     // if there's an error, it should be ENOSYS
     try {
-      tests_run++;
+      check_mtime(fd, mtime);
       fs.futimesSync(fd, atime, mtime);
       expect_ok('futimesSync', fd, undefined, atime, mtime);
     } catch (ex) {
       expect_errno('futimesSync', fd, ex, 'ENOSYS');
     }
+    tests_run++;
 
     let err;
     try {
+      check_mtime('foobarbaz', mtime);
       fs.utimesSync('foobarbaz', atime, mtime);
     } catch (ex) {
       err = ex;
@@ -107,7 +111,6 @@ function testIt(atime, mtime, callback) {
                 'It must be >= 0 && < 4294967296. Received -1'
       }
     );
-    tests_run++;
   }
 
   //
@@ -140,6 +143,7 @@ function testIt(atime, mtime, callback) {
         );
 
         syncTests();
+        callback();
 
         tests_run++;
       }));
@@ -147,13 +151,13 @@ function testIt(atime, mtime, callback) {
     }));
     tests_run++;
   }));
-  tests_run++;
 }
 
 const stats = fs.statSync(tmpdir.path);
 
 // Run tests
-const runTest = common.mustCall(testIt, 1);
+const runTest = common.mustCall(testIt, 6);
+const finalCbCheck = common.mustCall(() => {})
 
 runTest(new Date('1982-09-10 13:37'), new Date('1982-09-10 13:37'), () => {
   runTest(new Date(), new Date(), () => {
@@ -163,9 +167,7 @@ runTest(new Date('1982-09-10 13:37'), new Date('1982-09-10 13:37'), () => {
           runTest(
             new Date('2017-04-08T17:59:38.008Z'),
             new Date('2017-04-08T17:59:38.008Z'),
-            common.mustCall(() => {
-              // Done
-            })
+            finalCbCheck
           );
         });
       });
@@ -174,7 +176,7 @@ runTest(new Date('1982-09-10 13:37'), new Date('1982-09-10 13:37'), () => {
 });
 
 process.on('exit', () => {
-  assert.strictEqual(tests_ok, tests_run - 2);
+  assert.strictEqual(tests_ok, tests_run);
 });
 
 
