@@ -156,19 +156,21 @@ function testIt(atime, mtime, callback) {
 const stats = fs.statSync(tmpdir.path);
 
 // Run tests
-const runTest = common.mustCall(testIt, 6);
+const runTest = common.mustCall(testIt, 7);
 const finalCbCheck = common.mustCall(() => {})
 
 runTest(new Date('1982-09-10 13:37'), new Date('1982-09-10 13:37'), () => {
   runTest(new Date(), new Date(), () => {
     runTest(123456.789, 123456.789, () => {
       runTest(stats.mtime, stats.mtime, () => {
-        runTest('123456', -1, () => {
-          runTest(
-            new Date('2017-04-08T17:59:38.008Z'),
-            new Date('2017-04-08T17:59:38.008Z'),
-            finalCbCheck
-          );
+        runTest(stats.mtime.getTime() + 4, stats.mtime.getTime() + 4, () => {
+          runTest('123456', -1, () => {
+            runTest(
+              new Date('2017-04-08T17:59:38.008Z'),
+              new Date('2017-04-08T17:59:38.008Z'),
+              finalCbCheck
+            );
+          });
         });
       });
     });
