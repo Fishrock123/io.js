@@ -47,7 +47,7 @@ function check_mtime(resource, mtime) {
   const real_mtime = fs._toUnixTimestamp(stats.mtime);
   // check up to single-second precision
   // sub-second precision is OS and fs dependant
-  console.log('resource', resource, 'mtime', mtime, 'real_mtime', real_mtime)
+  console.log('mtime', mtime, 'real_mtime', real_mtime)
   return mtime - real_mtime < 2;
 }
 
@@ -163,7 +163,12 @@ runTest(new Date('1982-09-10 13:37'), new Date('1982-09-10 13:37'), () => {
   runTest(new Date(), new Date(), () => {
     runTest(123456.789, 123456.789, () => {
       runTest(stats.mtime, stats.mtime, () => {
-        runTest(stats.mtime.getTime() + 4, stats.mtime.getTime() + 4, () => {
+        console.log(stats.mtime)
+        console.log(stats.mtimeMs)
+        console.log(stats.mtime.getTime())
+        console.log(new Date(stats.mtimeMs))
+        console.log(new Date(stats.mtime.getTime()))
+        runTest(stats.mtime.getTime(), stats.mtime.getTime(), () => {
           runTest('123456', -1, () => {
             runTest(
               new Date('2017-04-08T17:59:38.008Z'),
