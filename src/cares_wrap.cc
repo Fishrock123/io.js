@@ -2221,6 +2221,7 @@ void Initialize(Local<Object> target,
   Local<FunctionTemplate> aiw =
       BaseObject::MakeLazilyInitializedJSTemplate(env);
   AsyncWrap::AddWrapMethods(env, aiw);
+  ReqWrap<uv_getaddrinfo_t>::AddWrapMethods(env, aiw);
   Local<String> addrInfoWrapString =
       FIXED_ONE_BYTE_STRING(env->isolate(), "GetAddrInfoReqWrap");
   aiw->SetClassName(addrInfoWrapString);
@@ -2229,6 +2230,7 @@ void Initialize(Local<Object> target,
   Local<FunctionTemplate> niw =
       BaseObject::MakeLazilyInitializedJSTemplate(env);
   AsyncWrap::AddWrapMethods(env, niw);
+  ReqWrap<uv_getnameinfo_t>::AddWrapMethods(env, aiw);
   Local<String> nameInfoWrapString =
       FIXED_ONE_BYTE_STRING(env->isolate(), "GetNameInfoReqWrap");
   niw->SetClassName(nameInfoWrapString);

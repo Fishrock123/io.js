@@ -10,6 +10,11 @@
 
 namespace node {
 
+using v8::FunctionCallbackInfo;
+using v8::FunctionTemplate;
+using v8::Local;
+using v8::Value;
+
 template <typename T>
 class ReqWrap : public AsyncWrap {
  public:
@@ -29,6 +34,12 @@ class ReqWrap : public AsyncWrap {
 
   template <typename LibuvFunction, typename... Args>
   inline int Dispatch(LibuvFunction fn, Args... args);
+
+  inline static void Cancel(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  inline static void AddWrapMethods(
+    Environment* env,
+    v8::Local<v8::FunctionTemplate> constructor);
 
  private:
   friend class Environment;

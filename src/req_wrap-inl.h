@@ -159,6 +159,28 @@ int ReqWrap<T>::Dispatch(LibuvFunction fn, Args... args) {
   return err;
 }
 
+template <typename T>
+void ReqWrap<T>::Cancel(const FunctionCallbackInfo<Value>& args) {
+  ReqWrap* wrap;
+  ASSIGN_OR_RETURN_UNWRAP(&wrap, args.Holder());
+
+  printf("JS Cancel\n");
+  wrap->Cancel();
+
+  int err = 0;
+  if (wrap->req_.data == wrap) {  // Only cancel if already dispatched.
+    err = uv_cancel(reinterpret_cast<uv_req_t*>(&wrap->req_));
+  }
+
+  args.GetReturnValue().Set(err);
+}
+
+template <typename T>
+void ReqWrap<T>::AddWrapMethods(Environment* env,
+                                Local<FunctionTemplate> t) {
+  env->SetProtoMethod(t, "cancel", ReqWrap::Cancel);
+}
+
 }  // namespace node
 
 #endif  // defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS
